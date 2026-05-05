@@ -44,6 +44,9 @@ const validarAtualizacaoProduto = [
   validation
 ];
 
+// Rota pública – não precisa de autenticação
+router.get('/todos', produtoController.listarTodosProdutos);
+
 router.use(auth);
 router.post("/", validarCriacaoProduto, produtoController.criarProduto);
 router.get("/", produtoController.listarProdutos);

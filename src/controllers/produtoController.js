@@ -91,3 +91,16 @@ exports.deletarProduto = async (req, res, next) => {
     return next(error);
   }
 };
+
+// Listar TODOS os produtos (de todos os usuários) + dados do criador
+exports.listarTodosProdutos = async (req, res, next) => {
+  try {
+    const produtos = await Produto.find()
+      .populate('criadoPor', 'name email')  // traz nome e email do usuário que criou
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(produtos);
+  } catch (error) {
+    return next(error);
+  }
+};

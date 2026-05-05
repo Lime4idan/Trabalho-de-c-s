@@ -1,17 +1,17 @@
-# API REST - Catalogo de Produtos (Node.js + MongoDB)
+ API REST - Catalogo de Produtos (Node.js + MongoDB)
 
 Projeto didatico em MVC com autenticacao JWT, senha criptografada com bcrypt e CRUD de produtos protegido.
 
-## Objetivo
+Objetivo
 
 Demonstrar:
 - Persistencia real com MongoDB/Mongoose.
 - Seguranca com JWT, bcrypt e sanitizacao anti NoSQL injection.
 - Boas praticas com arquitetura MVC, tratamento de erros e versionamento com GitFlow.
 
-## Estrutura de pastas
+Estrutura de pastas
 
-```txt
+txt
 src/
   models/      (User, Produto)
   controllers/ (authController, produtoController)
@@ -19,40 +19,40 @@ src/
   middlewares/ (auth.js, validation.js, errorHandler.js)
   config/      (db.js)
   utils/       (gerarToken.js)
-```
 
-## 1) Como instalar
 
-```bash
+1) Como instalar
+
+bash
 npm install
-```
+
 
 ## 2) Como configurar o .env
 
 Crie um arquivo `.env` na raiz com base no `.env.example`:
 
-```env
+`env
 MONGO_URI=mongodb://127.0.0.1:27017/catalogo_produtos_api
 JWT_SECRET=sua_chave_jwt_super_segura
 JWT_EXPIRES_IN=1d
 PORT=3000
-```
 
-## 3) Como rodar
 
-```bash
+ 3) Como rodar
+
+bash
 npm run dev
-```
+
 
 Para executar em modo normal:
 
-```bash
+bash
 npm start
-```
 
-## 4) Endpoints da API
 
-### Health Check
+4) Endpoints da API
+
+Health Check
 
 #### `GET /health`
 
@@ -63,56 +63,56 @@ npm start
 }
 ```
 
-### Autenticacao
+ Autenticacao
 
-#### `POST /api/auth/register`
+ `POST /api/auth/register`
 
 **Body**
-```json
+json
 {
   "nome": "Aidan",
   "email": "aidan@email.com",
   "senha": "123456"
 }
-```
+
 
 **Resposta 201**
-```json
+json
 {
   "mensagem": "Usuario registrado com sucesso",
   "token": "jwt..."
 }
-```
+`
 
-#### `POST /api/auth/login`
+`POST /api/auth/login`
 
 **Body**
-```json
+json
 {
   "email": "aidan@email.com",
   "senha": "123456"
 }
-```
+
 
 **Resposta 200**
-```json
+json
 {
   "mensagem": "Login realizado com sucesso",
   "token": "jwt..."
 }
-```
 
-### Produtos (todas as rotas protegidas)
+
+ Produtos (todas as rotas protegidas)
 
 Use no header:
-```txt
+txt
 Authorization: Bearer SEU_TOKEN
-```
+
 
 #### `POST /api/produtos`
 
 **Body**
-```json
+json
 {
   "nome": "Notebook Gamer",
   "preco": 4999.9,
@@ -123,10 +123,10 @@ Authorization: Bearer SEU_TOKEN
     "garantiaMeses": 12
   }
 }
-```
+
 
 **Resposta 201**
-```json
+json
 {
   "_id": "65f...",
   "nome": "Notebook Gamer",
@@ -141,21 +141,21 @@ Authorization: Bearer SEU_TOKEN
   "createdAt": "2026-04-30T...",
   "updatedAt": "2026-04-30T..."
 }
-```
 
-#### `GET /api/produtos`
+
+`GET /api/produtos`
 Lista somente os produtos do usuario autenticado.
 
-#### `GET /api/produtos/:id`
+ `GET /api/produtos/:id`
 Busca 1 produto apenas se ele pertencer ao usuario autenticado.
 
-#### `PUT /api/produtos/:id`
+ `PUT /api/produtos/:id`
 Atualiza apenas se o produto for do usuario autenticado.
 
-#### `DELETE /api/produtos/:id`
+ `DELETE /api/produtos/:id`
 Remove apenas se o produto for do usuario autenticado.
 
-## 5) Seguranca aplicada
+5) Seguranca aplicada
 
 - `bcryptjs`: armazena senha criptografada (hash).
 - `jsonwebtoken`: gera token JWT para autenticar requests.
@@ -164,7 +164,7 @@ Remove apenas se o produto for do usuario autenticado.
 - `express-validator`: valida e sanitiza entradas.
 - `helmet`: adiciona headers de seguranca.
 
-## 6) Por que async/await com try/catch?
+6) Por que async/await com try/catch?
 
 - `async/await` deixa o codigo assincrono mais legivel em operacoes com banco.
 - `try/catch` evita quebrar a API quando ocorre erro (ex: falha no MongoDB) e permite resposta controlada.
