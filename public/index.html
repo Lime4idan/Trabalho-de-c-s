@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de Produtos - API Rest</title>
+  <!-- Bootstrap 5 CSS (apenas estilo, sem JS) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-light">
+  <div class="container py-4">
+    <header class="text-center mb-5">
+      <h1 class="display-5 fw-semibold text-pink-gradient">✨ Meu Catálogo ✨</h1>
+      <p class="lead text-muted">gerencie seus produtos com estilo</p>
+    </header>
+
+    <div class="row g-4">
+      <!-- Coluna de Autenticação -->
+      <div class="col-md-5">
+        <div class="card shadow-sm border-0 rounded-4">
+          <div class="card-body p-4">
+            <h4 class="card-title text-center mb-4"><i class="bi bi-person-plus-fill text-pink"></i> Acessar</h4>
+            <!-- Abas manuais (sem Bootstrap JS) -->
+            <div class="d-flex gap-2 mb-3">
+              <button id="btnLoginTab" class="btn btn-outline-pink rounded-pill flex-fill active">Login</button>
+              <button id="btnCadastroTab" class="btn btn-outline-pink rounded-pill flex-fill">Cadastro</button>
+            </div>
+            <!-- Painel Login -->
+            <div id="loginPanel">
+              <form id="loginForm">
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" id="loginEmail" class="form-control rounded-pill" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Senha</label>
+                  <input type="password" id="loginSenha" class="form-control rounded-pill" required>
+                </div>
+                <button type="submit" class="btn btn-pink w-100 rounded-pill">Entrar <i class="bi bi-arrow-right"></i></button>
+              </form>
+            </div>
+            <!-- Painel Cadastro (inicialmente oculto) -->
+            <div id="cadastroPanel" style="display: none;">
+              <form id="registerForm">
+                <div class="mb-3">
+                  <label class="form-label">Nome</label>
+                  <input type="text" id="regNome" class="form-control rounded-pill" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" id="regEmail" class="form-control rounded-pill" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Senha</label>
+                  <input type="password" id="regSenha" class="form-control rounded-pill" required>
+                </div>
+                <button type="submit" class="btn btn-pink w-100 rounded-pill">Cadastrar <i class="bi bi-check-lg"></i></button>
+              </form>
+            </div>
+            <div id="authMessage" class="alert mt-3 d-none"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna de Produtos -->
+      <div class="col-md-7" id="produtosSection" style="display: none;">
+        <div class="card shadow-sm border-0 rounded-4">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="card-title mb-0"><i class="bi bi-grid-3x3-gap-fill text-pink"></i> Meus Produtos</h4>
+              <button class="btn btn-sm btn-outline-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#produtoModal" onclick="limparFormProduto()">+ Novo Produto</button>
+            </div>
+            <div id="produtosList" class="row g-3">
+              <!-- produtos serão carregados via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para produto (usa Bootstrap JS, mas vamos carregar o JS agora) -->
+  <div class="modal fade" id="produtoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4">
+        <div class="modal-header border-0">
+          <h5 class="modal-title"><i class="bi bi-tag-fill text-pink"></i> Produto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="produtoForm">
+            <input type="hidden" id="produtoId">
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" id="produtoNome" class="form-control rounded-pill" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Preço (R$)</label>
+              <input type="number" step="0.01" id="produtoPreco" class="form-control rounded-pill" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Categoria</label>
+              <input type="text" id="produtoCategoria" class="form-control rounded-pill" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Descrição</label>
+              <textarea id="produtoDescricao" rows="2" class="form-control rounded-3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Atributos dinâmicos (JSON)</label>
+              <textarea id="produtoAtributos" rows="2" class="form-control rounded-3" placeholder='{"marca":"Amazing", "cor":"rose"}'></textarea>
+              <small class="text-muted">opcional</small>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="salvarProdutoBtn" class="btn btn-pink rounded-pill">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agora carregamos o Bootstrap JS (será necessário para o modal) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/api.js"></script>
+</body>
+</html>

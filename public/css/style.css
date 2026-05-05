@@ -1,0 +1,58 @@
+body {
+    font-family: 'Quicksand', sans-serif;
+    background: #fef9f7;
+  }
+  
+  .text-pink {
+    color: #e8917a !important;
+  }
+  
+  .btn-pink {
+    background-color: #f4acb7;
+    border: none;
+    color: white;
+    transition: 0.2s;
+  }
+  .btn-pink:hover {
+    background-color: #e8917a;
+    color: white;
+  }
+  .btn-outline-pink {
+    border: 1px solid #f4acb7;
+    color: #e8917a;
+    background: white;
+  }
+  .btn-outline-pink:hover {
+    background-color: #f4acb7;
+    color: white;
+  }
+  
+  .text-pink-gradient {
+    background: linear-gradient(135deg, #e8917a, #f4acb7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .card {
+    border-radius: 1.5rem !important;
+    transition: transform 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .produto-card {
+    background: white;
+    border-radius: 1.2rem;
+    transition: all 0.2s;
+    border: 1px solid #ffe0db;
+  }
+  .produto-card:hover {
+    box-shadow: 0 8px 20px rgba(232, 145, 122, 0.15);
+  }
+  
+  .form-control:focus {
+    border-color: #f4acb7;
+    box-shadow: 0 0 0 0.2rem rgba(244, 172, 183, 0.25);
+  }
