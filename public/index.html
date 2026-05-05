@@ -23,12 +23,10 @@
         <div class="card shadow-sm border-0 rounded-4">
           <div class="card-body p-4">
             <h4 class="card-title text-center mb-4"><i class="bi bi-person-plus-fill text-pink"></i> Acessar</h4>
-            <!-- Abas manuais -->
             <div class="d-flex gap-2 mb-3">
               <button id="btnLoginTab" class="btn btn-outline-pink rounded-pill flex-fill active">Login</button>
               <button id="btnCadastroTab" class="btn btn-outline-pink rounded-pill flex-fill">Cadastro</button>
             </div>
-            <!-- Painel Login -->
             <div id="loginPanel">
               <form id="loginForm">
                 <div class="mb-3">
@@ -42,7 +40,6 @@
                 <button type="submit" class="btn btn-pink w-100 rounded-pill">Entrar <i class="bi bi-arrow-right"></i></button>
               </form>
             </div>
-            <!-- Painel Cadastro -->
             <div id="cadastroPanel" style="display: none;">
               <form id="registerForm">
                 <div class="mb-3">
@@ -65,20 +62,27 @@
         </div>
       </div>
 
-      <!-- Coluna de Produtos -->
+      <!-- Coluna de Produtos (duas seções empilhadas) -->
       <div class="col-md-7" id="produtosSection" style="display: none;">
+        <!-- Seção Meus Produtos -->
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="card-title mb-0"><i class="bi bi-grid-3x3-gap-fill text-pink"></i> Meus Produtos</h4>
+              <button class="btn btn-sm btn-outline-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#produtoModal" onclick="limparFormProduto()">+ Novo Produto</button>
+            </div>
+            <div id="meusProdutosList" class="row g-3">
+              <!-- meus produtos serão carregados aqui -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção Todos os Produtos -->
         <div class="card shadow-sm border-0 rounded-4">
           <div class="card-body p-4">
-            <!-- Botões de alternância Meus / Todos -->
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-              <div class="btn-group" role="group">
-                <button id="btnMeusProdutos" class="btn btn-outline-pink rounded-pill me-2 active">Meus Produtos</button>
-                <button id="btnTodosProdutos" class="btn btn-outline-pink rounded-pill">Todos os Produtos</button>
-              </div>
-              <button id="novoProdutoBtn" class="btn btn-sm btn-outline-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#produtoModal" onclick="limparFormProduto()">+ Novo Produto</button>
-            </div>
-            <div id="produtosList" class="row g-3">
-              <!-- produtos serão carregados via JS -->
+            <h4 class="card-title mb-3"><i class="bi bi-people-fill text-pink"></i> Todos os Produtos</h4>
+            <div id="todosProdutosList" class="row g-3">
+              <!-- produtos de todos os usuários serão carregados aqui -->
             </div>
           </div>
         </div>

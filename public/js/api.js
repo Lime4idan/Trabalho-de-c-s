@@ -2,7 +2,7 @@ let token = null;
 let produtoModalInstance = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Controle manual das abas
+  // Abas de login/cadastro
   const btnLogin = document.getElementById('btnLoginTab');
   const btnCadastro = document.getElementById('btnCadastroTab');
   const panelLogin = document.getElementById('loginPanel');
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     panelCadastro.style.display = 'block';
   });
 
-  // Inicializa modal do Bootstrap (já que agora temos o Bootstrap JS)
+  // Modal
   const modalElement = document.getElementById('produtoModal');
   if (modalElement) produtoModalInstance = new bootstrap.Modal(modalElement);
 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedToken) {
     token = savedToken;
     mostrarSecaoProdutos();
-    carregarProdutos();
+    carregarTodasListas();
   }
 });
 
@@ -58,7 +58,7 @@ async function fazerLogin(e) {
     mostrarMensagem(msgDiv, 'Login OK! Redirecionando...', 'success');
     setTimeout(() => {
       mostrarSecaoProdutos();
-      carregarProdutos();
+      carregarTodasListas();
     }, 1000);
   } catch (err) {
     mostrarMensagem(msgDiv, err.message, 'danger');
@@ -81,7 +81,6 @@ async function fazerCadastro(e) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.mensagem || 'Erro no cadastro');
     mostrarMensagem(msgDiv, 'Cadastro realizado! Faça login.', 'success');
-    // Trocar para aba login manualmente
     document.getElementById('btnLoginTab').click();
   } catch (err) {
     mostrarMensagem(msgDiv, err.message, 'danger');
@@ -92,37 +91,59 @@ function mostrarSecaoProdutos() {
   document.getElementById('produtosSection').style.display = 'block';
 }
 
-async function carregarProdutos() {
+async function carregarTodasListas() {
+  await carregarMeusProdutos();
+  await carregarTodosProdutos();
+}
+
+async function carregarMeusProdutos() {
   try {
     const res = await fetch('/api/produtos', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (!res.ok) throw new Error('Não autorizado');
     const produtos = await res.json();
-    const container = document.getElementById('produtosList');
-    if (produtos.length === 0) {
-      container.innerHTML = '<div class="col-12 text-center text-muted">Nenhum produto ainda. Crie o primeiro! ✨</div>';
-      return;
-    }
-    container.innerHTML = produtos.map(p => `
-      <div class="col-md-6 col-lg-4">
-        <div class="produto-card p-3">
-          <div class="d-flex justify-content-between">
-            <h6 class="mb-1 fw-bold">${escapeHtml(p.nome)}</h6>
+    exibirProdutos(produtos, document.getElementById('meusProdutosList'), true);
+  } catch (err) {
+    document.getElementById('meusProdutosList').innerHTML = `<div class="col-12 text-center text-muted">Erro: ${err.message}</div>`;
+  }
+}
+
+async function carregarTodosProdutos() {
+  try {
+    const res = await fetch('/api/produtos/todos');
+    if (!res.ok) throw new Error('Erro ao carregar produtos');
+    const produtos = await res.json();
+    exibirProdutos(produtos, document.getElementById('todosProdutosList'), false);
+  } catch (err) {
+    document.getElementById('todosProdutosList').innerHTML = `<div class="col-12 text-center text-muted">Erro: ${err.message}</div>`;
+  }
+}
+
+function exibirProdutos(produtos, container, comAcoes) {
+  if (!produtos.length) {
+    container.innerHTML = '<div class="col-12 text-center text-muted">Nenhum produto encontrado. ✨</div>';
+    return;
+  }
+  container.innerHTML = produtos.map(p => `
+    <div class="col-md-6 col-lg-4">
+      <div class="produto-card p-3">
+        <div class="d-flex justify-content-between">
+          <h6 class="mb-1 fw-bold">${escapeHtml(p.nome)}</h6>
+          ${comAcoes && p._id ? `
             <div>
               <i class="bi bi-pencil-square text-pink me-2" style="cursor:pointer" onclick="editarProduto('${p._id}')"></i>
               <i class="bi bi-trash3 text-pink" style="cursor:pointer" onclick="deletarProduto('${p._id}')"></i>
             </div>
-          </div>
-          <p class="small text-muted mb-1">${escapeHtml(p.categoria)}</p>
-          <p class="fw-bold text-pink mb-1">R$ ${Number(p.preco).toFixed(2)}</p>
-          <p class="small">${escapeHtml(p.descricao || '')}</p>
+          ` : ''}
         </div>
+        <p class="small text-muted mb-1">${escapeHtml(p.categoria)}</p>
+        <p class="fw-bold text-pink mb-1">R$ ${Number(p.preco).toFixed(2)}</p>
+        <p class="small">${escapeHtml(p.descricao || '')}</p>
+        ${!comAcoes && p.criadoPor ? `<p class="small text-muted mt-2"><i class="bi bi-person-circle"></i> Criado por: ${escapeHtml(p.criadoPor.name || p.criadoPor.email)}</p>` : ''}
       </div>
-    `).join('');
-  } catch (err) {
-    alert('Erro ao carregar produtos: ' + err.message);
-  }
+    </div>
+  `).join('');
 }
 
 function limparFormProduto() {
@@ -178,7 +199,8 @@ async function salvarProduto() {
     });
     if (!res.ok) throw new Error('Erro ao salvar produto');
     if (produtoModalInstance) produtoModalInstance.hide();
-    carregarProdutos();
+    // Recarrega ambas as listas após salvar
+    await carregarTodasListas();
   } catch (err) {
     alert(err.message);
   }
@@ -192,7 +214,7 @@ async function deletarProduto(id) {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (!res.ok) throw new Error('Erro ao deletar');
-    carregarProdutos();
+    await carregarTodasListas();
   } catch (err) {
     alert(err.message);
   }
