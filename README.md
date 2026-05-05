@@ -29,8 +29,8 @@ Projeto para demonstrar CRUD, segurança, banco NoSQL e GitFlow.
 - HTML/CSS/JS puro
 
 -> Como rodar o projeto
--1. Clonar o repositório
 
+-1. Clonar o repositório
 ->bash
 git clone https://github.com/Lime4dian/Trabalho-de-sites-2-.git
 cd Trabalho-de-sites-2-
