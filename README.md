@@ -1,19 +1,36 @@
-  API Catálogo de Produtos
+-> API Catálogo de Produtos
 
-API REST com Node.js, MongoDB, autenticação JWT e front-end simples.
+API REST com Node.js, Express, MongoDB, autenticação JWT e front-end em Bootstrap.  
+Projeto para demonstrar CRUD, segurança, banco NoSQL e GitFlow.
 
-   O que o projeto faz
+-> O que o sistema faz
 
 - Cadastro e login de usuários (senha criptografada com bcrypt)
-- CRUD completo de produtos (criar, listar, editar, deletar) – apenas para usuários autenticados
-- Cada produto tem nome, preço, categoria, descrição e atributos dinâmicos (aproveitando o modelo NoSQL)
-- Página web (front-end) para testar todas as funcionalidades
-- Endpoint público que lista todos os produtos com nome do criador
+- CRUD completo de produtos (criar, ler, atualizar, deletar)
+- Cada produto pertence a um usuário (relacionamento)
+- Atributos dinâmicos nos produtos (flexibilidade do MongoDB)
+- Front-end simples para consumir a API:
+  - Login e cadastro
+  - Listagem de **meus produtos** (com botões editar/excluir)
+  - Listagem de **todos os produtos** (com nome do criador)
+- Proteção contra NoSQL injection (sanitização manual + express-validator)
+- Middleware de autenticação com JWT
+- Tratamento global de erros
 
-   Como rodar
+-> Tecnologias
 
-No terminal:
+- Node.js + Express 5
+- MongoDB + Mongoose
+- JWT (jsonwebtoken)
+- bcryptjs
+- express-validator
+- helmet (comentado para desenvolvimento)
+- Bootstrap 5 (front-end)
+- HTML/CSS/JS puro
 
-```bash
-npm install
-npm run dev
+-> Como rodar o projeto
+-1. Clonar o repositório
+
+->bash
+git clone https://github.com/Lime4dian/Trabalho-de-sites-2-.git
+cd Trabalho-de-sites-2-
