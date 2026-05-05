@@ -15,9 +15,9 @@ O que o projeto faz
 - Proteção contra NoSQL injection (sanitização manual + validação)
 - Middleware de autenticação com JWT
 
-- Como rodar -
-No terminal:
 
+Como rodar 
+No terminal:
 
 cd api-catalogo-produtos
 npm install
@@ -39,7 +39,7 @@ JWT_EXPIRES_IN=1d
 
 - Endpoints da API -
   
-Autenticação (públicos)
+ Autenticação (públicos)
 
 - POST /api/auth/register
 Body: { "nome": "...", "email": "...", "senha": "..." }
@@ -49,7 +49,7 @@ Retorna: { "mensagem": "...", "token": "..." }
 Body: { "email": "...", "senha": "..." }
 Retorna: { "mensagem": "...", "token": "..." }
 
-Produtos (rotas protegidas – enviar token no header Authorization: Bearer <token>)
+ Produtos (rotas protegidas – enviar token no header Authorization: Bearer <token>)
  - GET /api/produtos – lista produtos do usuário logado
  - GET /api/produtos/todos – lista todos os produtos (público)
 - POST /api/produtos – cria produto
@@ -58,17 +58,7 @@ Produtos (rotas protegidas – enviar token no header Authorization: Bearer <tok
 - PUT /api/produtos/:id – atualiza produto
 - DELETE /api/produtos/:id – deleta produto
 
-- Como está organizado (MVC) -
-  
-src/
-├── config/db.js               # conexão MongoDB
-├── models/                    # User.js, Produto.js
-├── controllers/               # authController.js, produtoController.js
-├── routes/                    # authRoutes.js, produtoRoutes.js
-├── middlewares/               # auth.js, validation.js, errorHandler.js
-├── utils/gerarToken.js        # geração de JWT
-├── app.js                     # configura o Express
-└── server.js                  # sobe o servidor
+ Como está organizado 
 
 - models/ – define schemas com validações e tipos variados (String, Number, Date, ObjectId, Map para atributos dinâmicos)
 
@@ -80,7 +70,7 @@ src/
 
 - db.js – conecta ao MongoDB usando Mongoose
 
-- Segurança -
+ Segurança 
 - bcryptjs – hash de senhas
 - JWT – tokens com expiração
 - Sanitização manual – remove $ e . de req.body e req.params (evita NoSQL injection)
