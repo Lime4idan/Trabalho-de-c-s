@@ -18,7 +18,7 @@ Projetinho pra praticar Node.js + Express + MongoDB usando o padrão MVC, autent
 ->Documentação da API (Swagger)
 A documentação completa de todos os endpoints está disponível de forma interativa em:
 -> **[http://localhost:3000/api](http://localhost:3000/api)** (após rodar o servidor)
-> A documentação cobre todas as rotas da API: autenticação (`/api/auth/*`) e produtos (`/api/produtos/*`), incluindo rotas públicas e protegidas.
+A documentação cobre todas as rotas da API: autenticação (`/api/auth/*`) e produtos (`/api/produtos/*`), incluindo rotas públicas e protegidas.
 
 -> Como rodar
 
