@@ -20,9 +20,9 @@ router.post(
 
 /**
  * @swagger
- * /api/auth/login:
+ * /api/auth/register:
  *   post:
- *     summary: Autentica um usuário e retorna um token JWT
+ *     summary: Registra um novo usuário
  *     tags: [Autenticação]
  *     requestBody:
  *       required: true
@@ -31,33 +31,22 @@ router.post(
  *           schema:
  *             type: object
  *             required:
+ *               - nome
  *               - email
  *               - senha
  *             properties:
+ *               nome:
+ *                 type: string
  *               email:
  *                 type: string
- *                 format: email
  *               senha:
  *                 type: string
- *                 format: password
  *     responses:
- *       200:
- *         description: Login realizado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 mensagem:
- *                   type: string
- *                 token:
- *                   type: string
- *       401:
- *         description: Credenciais inválidas
- *       400:
- *         description: Dados inválidos
+ *       201:
+ *         description: Usuário criado
+ *       409:
+ *         description: E-mail já cadastrado
  */
-
 router.post(
   "/login",
   [

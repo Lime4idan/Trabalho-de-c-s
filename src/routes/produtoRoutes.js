@@ -89,7 +89,7 @@ router.use(auth);
  * @swagger
  * /api/produtos:
  *   post:
- *     summary: Cria um novo produto (autenticado)
+ *     summary: Cria um novo produto
  *     tags: [Produtos]
  *     security:
  *       - bearerAuth: []
@@ -108,26 +108,17 @@ router.use(auth);
  *                 type: string
  *               preco:
  *                 type: number
- *                 minimum: 0
  *               descricao:
  *                 type: string
  *               categoria:
  *                 type: string
  *               atributosDinamicos:
  *                 type: object
- *                 additionalProperties: true
- *                 description: Atributos extras (ex: cor, tamanho)
  *     responses:
  *       201:
- *         description: Produto criado com sucesso
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Produto'
+ *         description: Produto criado
  *       400:
  *         description: Dados inválidos
- *       401:
- *         description: Token não fornecido ou inválido
  */
 router.post("/", validarCriacaoProduto, produtoController.criarProduto);
 

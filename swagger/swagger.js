@@ -1,4 +1,5 @@
 const swaggerJsdoc = require('swagger-jsdoc');
+const path = require('path');
 
 const options = {
   definition: {
@@ -32,7 +33,9 @@ const options = {
       },
     },
   },
-  apis: ['./src/routes/*.js'],
+  apis: [path.join(__dirname, '../src/routes/*.js')],
 };
 
-module.exports = swaggerJsdoc(options);
+const specs = swaggerJsdoc(options);
+console.log(' Rotas detectadas:', Object.keys(specs.paths || {}));
+module.exports = specs;
