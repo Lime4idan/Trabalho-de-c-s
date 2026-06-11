@@ -18,6 +18,46 @@ router.post(
   authController.register
 );
 
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Autentica um usuário e retorna um token JWT
+ *     tags: [Autenticação]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - senha
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               senha:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Login realizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mensagem:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ *       401:
+ *         description: Credenciais inválidas
+ *       400:
+ *         description: Dados inválidos
+ */
+
 router.post(
   "/login",
   [

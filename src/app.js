@@ -46,6 +46,10 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/produtos", produtoRoutes);
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('../swagger/swagger'); 
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
 app.use((req, res) => {
   res.status(404).json({ mensagem: "Rota nao encontrada" });
 });
