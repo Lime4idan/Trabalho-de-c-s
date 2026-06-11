@@ -1,36 +1,81 @@
--> API Catálogo de Produtos
+API Catálogo de Produtos
 
-API REST com Node.js, Express, MongoDB, autenticação JWT e front-end em Bootstrap.  
-Projeto para demonstrar CRUD, segurança, banco NoSQL e GitFlow.
+Projetinho pra praticar Node.js + Express + MongoDB usando o padrão MVC, autenticação JWT, bcrypt e CRUD de produtos com atributos dinâmicos.
 
--> O que o sistema faz
+O que o projeto faz
 
-- Cadastro e login de usuários (senha criptografada com bcrypt)
+- Cadastro e login de usuários (senha criptografada)
 - CRUD completo de produtos (criar, ler, atualizar, deletar)
-- Cada produto pertence a um usuário (relacionamento)
+- Cada produto pertence a um usuário
 - Atributos dinâmicos nos produtos (flexibilidade do MongoDB)
-- Front-end simples para consumir a API:
-  - Login e cadastro
-  - Listagem de **meus produtos** (com botões editar/excluir)
-  - Listagem de **todos os produtos** (com nome do criador)
-- Proteção contra NoSQL injection (sanitização manual + express-validator)
+- Front-end simples (Bootstrap) para consumir a API:
+ - Login e cadastro
+ - Lista "Meus Produtos" (com botões editar/excluir)
+ - Lista "Todos os Produtos" (com nome do criador)
+- Proteção contra NoSQL injection (sanitização manual + validação)
 - Middleware de autenticação com JWT
-- Tratamento global de erros
 
--> Tecnologias
 
-- Node.js + Express 5
-- MongoDB + Mongoose
-- JWT (jsonwebtoken)
-- bcryptjs
-- express-validator
-- helmet (comentado para desenvolvimento)
-- Bootstrap 5 (front-end)
-- HTML/CSS/JS puro
+Como rodar 
+No terminal:
 
--> Como rodar o projeto
--1. Clonar o repositório
+cd api-catalogo-produtos
+npm install
+npm run dev
 
-->bash
-git clone https://github.com/Lime4dian/Trabalho-de-sites-2-.git
-cd Trabalho-de-sites-2-
+Depois abre no navegador:
+
+- http://localhost:3000 (front-end)
+
+- Antes de rodar - 
+- Crie um arquivo .env na raiz (veja o .env.example):
+
+
+PORT=3000
+MONGO_URI=mongodb://127.0.0.1:27017/catalogo_produtos_api
+JWT_SECRET=sua_chave_jwt_super_segura
+JWT_EXPIRES_IN=1d
+- Pode usar MongoDB local ou Atlas (nuvem). Se usar Atlas, substitua a string de conexão.
+
+- Endpoints da API -
+  
+ Autenticação (públicos)
+
+- POST /api/auth/register
+Body: { "nome": "...", "email": "...", "senha": "..." }
+Retorna: { "mensagem": "...", "token": "..." }
+
+- POST /api/auth/login
+Body: { "email": "...", "senha": "..." }
+Retorna: { "mensagem": "...", "token": "..." }
+
+ Produtos (rotas protegidas – enviar token no header Authorization: Bearer <token>)
+ - GET /api/produtos – lista produtos do usuário logado
+ - GET /api/produtos/todos – lista todos os produtos (público)
+- POST /api/produtos – cria produto
+- Body: { "nome": "...", "preco": 0, "categoria": "...", "descricao": "...", "atributosDinamicos": {...} }
+- GET /api/produtos/:id – busca produto por ID
+- PUT /api/produtos/:id – atualiza produto
+- DELETE /api/produtos/:id – deleta produto
+
+ Como está organizado 
+
+- models/ – define schemas com validações e tipos variados (String, Number, Date, ObjectId, Map para atributos dinâmicos)
+
+- controllers/ – lógica de cada rota (async/await + try/catch)
+
+- routes/ – define URLs e chama os controllers, aplica validações
+
+- middlewares/ – autenticação JWT, validação de entradas, tratamento de erros
+
+- db.js – conecta ao MongoDB usando Mongoose
+
+ Segurança 
+- bcryptjs – hash de senhas
+- JWT – tokens com expiração
+- Sanitização manual – remove $ e . de req.body e req.params (evita NoSQL injection)
+- express-validator – valida email, tamanho de senha, tipos numéricos, etc.
+
+- Observação -
+O front-end (pasta public/) é só para demonstrar o consumo da API. O foco principal é a API REST.
+
