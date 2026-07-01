@@ -39,9 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Substitua o bloco da função fazerLogin por este corrigido:
 async function fazerLogin(e) {
   e.preventDefault();
-  const email = document.getElementById('loginEmail').value;
+  const email = document.getElementById('loginEmail').value; // Pega o valor do input da tela
   const senha = document.getElementById('loginSenha').value;
   const msgDiv = document.getElementById('authMessage');
 
@@ -49,7 +50,7 @@ async function fazerLogin(e) {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, senha })
+      body: JSON.stringify({ nick: email, senha }) // Modificado aqui de "email" para "nick"
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.mensagem || 'Erro no login');
@@ -68,15 +69,17 @@ async function fazerLogin(e) {
 async function fazerCadastro(e) {
   e.preventDefault();
   const nome = document.getElementById('regNome').value;
-  const email = document.getElementById('regEmail').value;
+  const email = document.getElementById('regEmail').value; // Valor vindo do input de email da tela
   const senha = document.getElementById('regSenha').value;
   const msgDiv = document.getElementById('authMessage');
 
   try {
-    const res = await fetch('/api/auth/register', {
+    // Rota alterada de '/api/auth/register' para '/api/auth/cadastro'
+    const res = await fetch('/api/auth/cadastro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome, email, senha })
+      // Enviando 'nick' em vez de 'email' para alinhar com o banco de dados
+      body: JSON.stringify({ nome, nick: email, senha })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.mensagem || 'Erro no cadastro');
@@ -125,26 +128,49 @@ function exibirProdutos(produtos, container, comAcoes) {
     container.innerHTML = '<div class="col-12 text-center text-muted">Nenhum produto encontrado. ✨</div>';
     return;
   }
-  container.innerHTML = produtos.map(p => `
-    <div class="col-md-6 col-lg-4">
-      <div class="produto-card p-3">
-        <div class="d-flex justify-content-between">
-          <h6 class="mb-1 fw-bold">${escapeHtml(p.nome)}</h6>
-          ${comAcoes && p._id ? `
-            <div>
-              <i class="bi bi-pencil-square text-pink me-2" style="cursor:pointer" onclick="editarProduto('${p._id}')"></i>
-              <i class="bi bi-trash3 text-pink" style="cursor:pointer" onclick="deletarProduto('${p._id}')"></i>
-            </div>
+  container.innerHTML = produtos.map(p => {
+    // Identificador correto com base no seu SELECT
+    const idProd = p.id_produto || p.id;
+    
+    // Lê a coluna 'valor' retornada pelo MySQL
+    let precoFormatado = '0.00';
+    if (p.valor !== undefined && p.valor !== null) {
+      const precoLimpo = String(p.valor).replace(/[^0-9.,]/g, '').replace(',', '.');
+      const precoNum = parseFloat(precoLimpo);
+      if (!isNaN(precoNum)) {
+        precoFormatado = precoNum.toFixed(2);
+      }
+    }
+
+    // Identifica o ID da categoria retornado pelo banco
+    const categoriaExibida = p.categoria || p.categorias_id_categoria || '';
+
+    return `
+      <div class="col-md-6 col-lg-4">
+        <div class="produto-card p-3">
+          <div class="d-flex justify-content-between">
+            <h6 class="mb-1 fw-bold">${escapeHtml(p.nome)}</h6>
+            ${comAcoes && idProd ? `
+              <div>
+                <i class="bi bi-pencil-square text-pink me-2" style="cursor:pointer" onclick="editarProduto('${idProd}')"></i>
+                <i class="bi bi-trash3 text-pink" style="cursor:pointer" onclick="deletarProduto('${idProd}')"></i>
+              </div>
+            ` : ''}
+          </div>
+          <p class="small text-muted mb-1">Categoria: ${escapeHtml(String(categoriaExibida))}</p>
+          <p class="fw-bold text-pink mb-1">R$ ${precoFormatado}</p>
+          <p class="small">${escapeHtml(p.descricao || '')}</p>
+          ${!comAcoes && p.criadoPor ? `
+            <p class="small text-muted mt-2">
+              <i class="bi bi-person-circle"></i> Criado por: ${escapeHtml(p.criadoPor.name || p.criadoPor.email || p.criadoPor.nick || p.criadoPor)}
+            </p>
           ` : ''}
         </div>
-        <p class="small text-muted mb-1">${escapeHtml(p.categoria)}</p>
-        <p class="fw-bold text-pink mb-1">R$ ${Number(p.preco).toFixed(2)}</p>
-        <p class="small">${escapeHtml(p.descricao || '')}</p>
-        ${!comAcoes && p.criadoPor ? `<p class="small text-muted mt-2"><i class="bi bi-person-circle"></i> Criado por: ${escapeHtml(p.criadoPor.name || p.criadoPor.email)}</p>` : ''}
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
+
 
 function limparFormProduto() {
   document.getElementById('produtoId').value = '';

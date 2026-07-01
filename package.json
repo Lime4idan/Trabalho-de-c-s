@@ -1,25 +1,24 @@
 {
   "name": "api-catalogo-produtos",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "API de loja com Node.js, Express e MySQL",
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "db:setup": "node scripts/setupDatabase.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-validator": "^7.3.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
-    "mongodb": "^7.2.0",
-    "mongoose": "^9.5.0",
+    "mysql2": "^3.22.5",
     "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"

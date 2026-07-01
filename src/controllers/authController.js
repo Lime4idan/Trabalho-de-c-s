@@ -1,56 +1,35 @@
-const bcrypt = require("bcryptjs");
-const User = require("../models/User");
+const crypto = require("crypto");
+const usuarioModel = require("../models/usuarioModel");
 const gerarToken = require("../utils/gerarToken");
 
-exports.register = async (req, res, next) => {
-  try {
-    const { nome, email, senha } = req.body;
-
-    const usuarioExistente = await User.findOne({ email });
-    if (usuarioExistente) {
-      return res.status(409).json({ mensagem: "Email ja cadastrado" });
-    }
-
-    // O hash protege a senha mesmo se houver vazamento no banco.
-    const senhaCriptografada = await bcrypt.hash(senha, 10);
-    const usuario = await User.create({
-      name: nome,
-      email,
-      password: senhaCriptografada
-    });
-
-    const token = gerarToken(usuario._id);
-    return res.status(201).json({
-      mensagem: "Usuario registrado com sucesso",
-      token
-    });
-  } catch (error) {
-    // Em operacoes assincronas, try/catch captura erros de banco e criptografia.
-    return next(error);
-  }
-};
+function md5(texto) {
+  return crypto.createHash("md5").update(texto).digest("hex");
+}
 
 exports.login = async (req, res, next) => {
   try {
-    const { email, senha } = req.body;
+    const { nick, senha } = req.body;
 
-    const usuario = await User.findOne({ email }).select("+password");
+    const usuario = await usuarioModel.buscarPorNick(nick);
     if (!usuario) {
       return res.status(401).json({ mensagem: "Credenciais invalidas" });
     }
 
-    const senhaCorreta = await bcrypt.compare(senha, usuario.password);
-    if (!senhaCorreta) {
+    const senhaHash = md5(senha);
+    if (senhaHash !== usuario.senha) {
       return res.status(401).json({ mensagem: "Credenciais invalidas" });
     }
 
-    const token = gerarToken(usuario._id);
+    const token = gerarToken(usuario.id_usuario, usuario.nick);
     return res.status(200).json({
       mensagem: "Login realizado com sucesso",
-      token
+      token,
+      usuario: {
+        id_usuario: usuario.id_usuario,
+        nick: usuario.nick
+      }
     });
   } catch (error) {
     return next(error);
   }
 };
-

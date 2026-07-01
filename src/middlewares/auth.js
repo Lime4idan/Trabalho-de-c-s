@@ -10,7 +10,11 @@ function auth(req, res, next) {
 
     const token = authHeader.split(" ")[1];
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.usuario = { id: payload.id };
+
+    req.usuario = {
+      id_usuario: payload.id_usuario,
+      nick: payload.nick
+    };
 
     return next();
   } catch (error) {

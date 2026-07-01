@@ -1,12 +1,14 @@
 require("dotenv").config();
 const app = require("./app");
-const conectarDB = require("./config/db");
+const pool = require("./config/database");
 
 const PORT = process.env.PORT || 3000;
 
 async function iniciarServidor() {
   try {
-    await conectarDB();
+    await pool.query("SELECT 1");
+    console.log("MySQL conectado com sucesso.");
+
     app.listen(PORT, () => {
       console.log(`Servidor rodando na porta ${PORT}`);
     });

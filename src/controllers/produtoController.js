@@ -1,44 +1,43 @@
-const mongoose = require("mongoose");
-const Produto = require("../models/Produto");
+const produtoModel = require("../models/produtoModel");
 
-exports.criarProduto = async (req, res, next) => {
+function exigirUsuario(req, res) {
+  if (!req.usuario?.id_usuario) {
+    res.status(401).json({ mensagem: "Usuario nao autenticado" });
+    return false;
+  }
+  return true;
+}
+
+exports.criar = async (req, res, next) => {
   try {
-    // async/await deixa o fluxo mais legivel para operacoes de I/O com o banco.
-    const novoProduto = await Produto.create({
-      ...req.body,
-      criadoPor: req.usuario.id
-    });
+    if (!exigirUsuario(req, res)) return;
 
-    return res.status(201).json(novoProduto);
+    const produto = await produtoModel.criar(req.body);
+    return res.status(201).json(produto);
   } catch (error) {
-    // try/catch impede quebra da aplicacao e delega resposta padronizada ao middleware global.
+    if (error.code === "ER_NO_REFERENCED_ROW_2") {
+      return res.status(400).json({ mensagem: "Categoria informada nao existe" });
+    }
     return next(error);
   }
 };
 
-exports.listarProdutos = async (req, res, next) => {
+exports.listar = async (req, res, next) => {
   try {
-    const produtos = await Produto.find({ criadoPor: req.usuario.id }).sort({
-      createdAt: -1
-    });
+    if (!exigirUsuario(req, res)) return;
 
+    const produtos = await produtoModel.listarTodos();
     return res.status(200).json(produtos);
   } catch (error) {
     return next(error);
   }
 };
 
-exports.buscarProdutoPorId = async (req, res, next) => {
+exports.buscarPorId = async (req, res, next) => {
   try {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).json({ mensagem: "ID de produto invalido" });
-    }
+    if (!exigirUsuario(req, res)) return;
 
-    const produto = await Produto.findOne({
-      _id: req.params.id,
-      criadoPor: req.usuario.id
-    });
-
+    const produto = await produtoModel.buscarPorId(req.params.id);
     if (!produto) {
       return res.status(404).json({ mensagem: "Produto nao encontrado" });
     }
@@ -49,57 +48,34 @@ exports.buscarProdutoPorId = async (req, res, next) => {
   }
 };
 
-exports.atualizarProduto = async (req, res, next) => {
+exports.atualizar = async (req, res, next) => {
   try {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).json({ mensagem: "ID de produto invalido" });
-    }
+    if (!exigirUsuario(req, res)) return;
 
-    const produtoAtualizado = await Produto.findOneAndUpdate(
-      { _id: req.params.id, criadoPor: req.usuario.id },
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!produtoAtualizado) {
+    const produto = await produtoModel.atualizar(req.params.id, req.body);
+    if (!produto) {
       return res.status(404).json({ mensagem: "Produto nao encontrado" });
     }
 
-    return res.status(200).json(produtoAtualizado);
+    return res.status(200).json(produto);
   } catch (error) {
+    if (error.code === "ER_NO_REFERENCED_ROW_2") {
+      return res.status(400).json({ mensagem: "Categoria informada nao existe" });
+    }
     return next(error);
   }
 };
 
-exports.deletarProduto = async (req, res, next) => {
+exports.deletar = async (req, res, next) => {
   try {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).json({ mensagem: "ID de produto invalido" });
-    }
+    if (!exigirUsuario(req, res)) return;
 
-    const produtoRemovido = await Produto.findOneAndDelete({
-      _id: req.params.id,
-      criadoPor: req.usuario.id
-    });
-
-    if (!produtoRemovido) {
+    const removido = await produtoModel.deletar(req.params.id);
+    if (!removido) {
       return res.status(404).json({ mensagem: "Produto nao encontrado" });
     }
 
     return res.status(200).json({ mensagem: "Produto removido com sucesso" });
-  } catch (error) {
-    return next(error);
-  }
-};
-
-// Listar TODOS os produtos (de todos os usuários) + dados do criador
-exports.listarTodosProdutos = async (req, res, next) => {
-  try {
-    const produtos = await Produto.find()
-      .populate('criadoPor', 'name email')  // traz nome e email do usuário que criou
-      .sort({ createdAt: -1 });
-
-    return res.status(200).json(produtos);
   } catch (error) {
     return next(error);
   }
